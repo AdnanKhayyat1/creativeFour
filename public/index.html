@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PhoneBook</title>
+  <link href='https://fonts.googleapis.com/css?family=Didact Gothic' rel='stylesheet'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div id = "root">
+    <div class = "sidenav">
+      <div class = "sidenavtext">
+      <h2>PhoneBook</h2>
+    </div>
+        <button type="button" id="myBtn" class="btn btn-primary">Add Contact</button> </br>
+        <!-- <button type="button" id="BtnDel" class="btn btn-danger">Delete Contact</button> -->
+        <h6>To show edit options, click on contact you want to edit first.</h6>
+        <button type="button" onclick="myFunction()" class="btn btn-warning">Show Edit Options</button>
+        <div id="editTab"  v-if="findItem">
+          <form>
+              <input v-model="findItem.name" placeholder="Name">
+              <input v-model="findItem.phone" placeholder="Phone Number">
+              <input v-model="findItem.email" placeholder="e-mail address">
+              <button type="button" @click="editItem()" class="btn btn-light">Edit</button>
+          </form>
+        </div>
+       
+        <button type="button"  class="btn btn-success" value="Refresh Page" onClick="window.location.reload();">Refresh</button>
+        <a href="https://github.com/AdnanKhayyat1/creativeFour" class="btn btn-light">Github</a>
+        
+      
+
+    </div>
+    <div class = "main">
+      <h2>Welcome to Online Phonebook. </h2><h5>Add, Edit and Delete your Contacts Below:</h5>
+      <!-- <button id="myBtn">Open Modal</button> -->
+      
+      <section class="my-contacts">
+          <div id = "col-title">
+        <div class="row">
+            
+              <div class="column">Name</div>
+              <div class="column">Phone Number</div>
+              <div class="column">E-mail</div>
+            
+            </div>
+          </div>
+          <div class="token" v-for="item in items">
+              
+              <div class="row">
+                  
+                  <div class="column">{{item.name}}</div>
+                  <div class="column">{{item.phone}} </div>
+                  <div class="columnLeft">{{item.email}} </div>
+                  <div class="columnLeftButton"><button type="button" @click="deleteItem(item);" class="btn btn-danger">X</button>
+                    <button type="button" class="btn btn-warning" @click="selectItem(item)">E</button></div>
+                  
+                </div>
+           
+          </div>
+          </section>
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+        <h2>Add a Contact</h2>
+      <span class="close">&times;</span>
+      
+    </div>
+    <div class="modal-body">
+        <div class="add">
+            <div class="form">
+              
+              <input v-model="name" placeholder="Name">
+              <input v-model="phone" placeholder="Phone Number">
+              <input v-model="email" placeholder="e-mail address">
+              
+              
+              <p></p>
+              <button @click="addNewItem">Add Item</button>
+              
+            </div>
+            <div v-if="addItem">
+              <h2>{{addItem.name}}</h2>
+              <h3>{{addItem.phone}}</h3>
+              <h3>{{addItem.email}}</h3>
+              <p>{{addItem.description}}</p>
+            </div>
+          </div>
+    </div>
+    <div class="modal-footer">
+      <h3></h3>
+    </div>
+  </div>
+
+</div>
+
+<!-- <div id="myDelete" class="modal">
+<div class="modal-content">
+    <div class="modal-header">
+        <h2>Delete a Contact</h2>
+      <span class="close2">&times;</span>
+      
+    </div>
+    <div class="modal-body">   
+      <div class="edit">
+        <div class="form">
+          <input v-model="findTitle" placeholder="Search">
+          <div class="suggestions" v-if="suggestions.length > 0">
+            <div class="suggestion" v-for="item in suggestions" @click="selectItem(item)">{{item.name}}
+            </div>
+          </div>
+        </div>
+        
+        <div class="actions" v-if="findItem">
+            <button @click="deleteItem(findItem)">Delete</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <h3></h3>
+    </div>
+  </div>
+
+</div> -->
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js" integrity="sha256-mpnrJ5DpEZZkwkE1ZgkEQQJW/46CSEh/STrZKOB/qoM=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.7/vue.js" integrity="sha256-g+Q8DFAmG5+eyRPSydX0LY4TfjsL11XSDrIGerbbEdA=" crossorigin="anonymous"></script>
+  <script src="script.js"></script>
+  <script>
+  // Get the modal
+// NEW 
+
+var modal = document.getElementById("myModal");
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+function myFunction() {
+  document.getElementById('myDIV').style.display = "block";
+  
+}
+
+// DELETE
+// var modalDel = document.getElementById("myDelete");
+// // Get the button that opens the modal
+// var deleteBut = document.getElementById("BtnDel");
+// // Get the <span> element that closes the modal
+// var span2 = document.getElementsByClassName("close2")[0];
+// // When the user clicks the button, open the modal 
+// deleteBut.onclick = function() {
+//   modalDel.style.display = "block";
+// }
+// // When the user clicks on <span> (x), close the modal
+// span2.onclick = function() {
+//   modalDel.style.display = "none";
+// }
+// // When the user clicks anywhere outside of the modal, close it
+// window.onclick = function(event) {
+//   if (event.target == modalDel) {
+//     modalDel.style.display = "none";
+//   }
+// }
+</script>
+</body>
+</html>
